@@ -1,0 +1,49 @@
+{
+  "name": "jg-api",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "author": "jg-company",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,json}'",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express-rate-limit": "^6.0.2",
+    "@types/morgan": "^1.9.10",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,json}": [
+      "eslint --fix",
+      "prettier --write",
+      "tsc --noEmit"
+    ]
+  }
+}
