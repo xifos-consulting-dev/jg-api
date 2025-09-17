@@ -19,9 +19,9 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
-app.get('/api/sendEmail/:email', async (req, res) => {
+app.post('/api/sendEmail/:email', async (req, res) => {
   try {
-    await sendEmail(req.params.email, 'Hello', 'This is a test email');
+    await sendEmail(req.params.email, 'your request was received', req.body);
     res.send('Email sent');
   } catch (error) {
     res.status(500).send('Error sending email');
