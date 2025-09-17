@@ -3,32 +3,28 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "ES2022",
-    "module": "CommonJS",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "baseUrl": "./src",
     "paths": {
-      "*": [
-        "*"
-      ]
+      "middlewares/*": ["middlewares/*"],
+      "config/*": ["config/*"],
+      "routes/*": ["routes/*"]
     },
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "lib": [
-      "es2022"
-    ]
+    "lib": ["es2022"]
   }
 }
