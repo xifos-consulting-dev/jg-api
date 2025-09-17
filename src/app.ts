@@ -4,7 +4,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 import userRoutes from './routes/exampleRoute';
-import { errorHandler } from './middlewares/errorHandler';
+import { errorHandler } from 'middlewares/errorHandler';
+import sendEmail from '../src/middlewares/emailSender';
 
 const app = express();
 
@@ -18,6 +19,15 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.get('/api/sendEmail/:email', async (req, res) => {
+  try {
+    await sendEmail(req.params.email, 'Hello', 'This is a test email');
+    res.send('Email sent');
+  } catch (error) {
+    res.status(500).send('Error sending email');
+    console.error(error);
+  }
+});
 
 // Error handling (last middleware)
 app.use(errorHandler);
