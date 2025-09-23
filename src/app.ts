@@ -4,8 +4,11 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 import userRoutes from './routes/exampleRoute';
+import loginRoutes from './routes/loginRoute';
 import { errorHandler } from 'middlewares/errorHandler';
 import sendEmail from '../src/middlewares/emailSender';
+//import { verifyToken } from './services/LoginService';
+import { HttpException } from './utils/HttpError';
 
 const app = express();
 
@@ -21,9 +24,23 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.post('/api/sendEmail/:email', async (req, res) => {
   try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader?.startsWith('Bearer ')) {
+      throw new HttpException(401, 'Missing authorization token');
+    }
+
+    //  const token = authHeader.substring('Bearer '.length).trim();
+    //   verifyToken(token);
+
     await sendEmail(req.params.email, 'your request was received', req.body);
     res.send('Email sent');
   } catch (error) {
+    if (error instanceof HttpException) {
+      res.status(error.status).json({ message: error.message });
+      return;
+    }
+
     res.status(500).send('Error sending email');
     console.error(error);
   }
@@ -31,5 +48,6 @@ app.post('/api/sendEmail/:email', async (req, res) => {
 
 // Error handling (last middleware)
 app.use(errorHandler);
+app.use('/api/login', loginRoutes);
 
 export default app;
