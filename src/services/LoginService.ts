@@ -1,6 +1,5 @@
 import { HttpException } from '../utils/HttpError';
-import { signJwt } from '../middlewares/JwtAuth';
-
+import { signJwt, verifyJwt } from '../middlewares/JwtAuth';
 type UserCredential = {
   id: string;
   user: string;
@@ -45,8 +44,6 @@ const credentialDump: ReadonlyArray<UserCredential> = [
   },
 ];
 
-const TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
-
 class LoginService {
   private readonly credentials: Map<string, UserCredential>;
 
@@ -73,7 +70,7 @@ class LoginService {
   }
 
   private createToken(record: UserCredential): string {
-    console.log('Creating token for user:', record);
+    console.log('Creating token for user:', record.user);
     const token = signJwt(
       {
         id: record.id,
@@ -91,26 +88,18 @@ class LoginService {
       throw new HttpException(401, 'Authorization token required');
     }
 
-    let payload: string;
+    let payload: ReturnType<typeof verifyJwt>;
     try {
-      payload = Buffer.from(token, 'base64').toString('utf-8');
+      payload = verifyJwt(token);
     } catch {
-      throw new HttpException(401, 'Invalid token');
+      throw new HttpException(401, 'Invalid or expired token');
     }
 
-    const [id, user, issuedAt] = payload.split(':');
+    const { id, user } = payload;
 
-    if (!id || !user || !issuedAt) {
+    if (!id || typeof user !== 'string') {
+      console.log('Invalid token payload:', payload);
       throw new HttpException(401, 'Invalid token payload');
-    }
-
-    const issuedAtMs = Number.parseInt(issuedAt, 10);
-    if (Number.isNaN(issuedAtMs)) {
-      throw new HttpException(401, 'Invalid token payload');
-    }
-
-    if (Date.now() - issuedAtMs > TOKEN_TTL_MS) {
-      throw new HttpException(401, 'Token expired');
     }
 
     const record = this.credentials.get(user.toLowerCase());
@@ -122,7 +111,7 @@ class LoginService {
     if (!record.active) {
       throw new HttpException(403, 'User is inactive');
     }
-
+    console.log('Token verified for user:', record.user);
     return record;
   }
 }

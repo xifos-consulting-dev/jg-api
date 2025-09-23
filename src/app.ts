@@ -7,7 +7,7 @@ import userRoutes from './routes/exampleRoute';
 import loginRoutes from './routes/loginRoute';
 import { errorHandler } from 'middlewares/errorHandler';
 import sendEmail from '../src/middlewares/emailSender';
-//import { verifyToken } from './services/LoginService';
+import { verifyToken } from './services/LoginService';
 import { HttpException } from './utils/HttpError';
 
 const app = express();
@@ -30,8 +30,8 @@ app.post('/api/sendEmail/:email', async (req, res) => {
       throw new HttpException(401, 'Missing authorization token');
     }
 
-    //  const token = authHeader.substring('Bearer '.length).trim();
-    //   verifyToken(token);
+    const token = authHeader.substring('Bearer '.length).trim();
+    verifyToken(token);
 
     await sendEmail(req.params.email, 'your request was received', req.body);
     res.send('Email sent');
