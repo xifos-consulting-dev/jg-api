@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getUsers } from '../controllers/exampleController';
 
 const router = Router();
 
-router.get('/', getUsers);
+router.get('/', (_req, res) => {
+  res.status(200).json('is ok');
+});
 
 export default router;

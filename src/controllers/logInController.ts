@@ -17,3 +17,8 @@ export const logIn = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const checkLogin = (_req: Request, res: Response) => {
+  console.log('checkLogin called');
+  res.status(200).json({ message: 'Login route is working' });
+};
