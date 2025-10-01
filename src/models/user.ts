@@ -41,8 +41,10 @@ const userCredentialSchema = new Schema<UserCredentialDoc>(
       transform: (_doc, ret: any) => {
         // expose `id` instead of `_id`, remove internal fields
         if (ret && typeof ret._id !== 'undefined' && ret._id !== null) {
-          const maybe = ret._id as any;
-          ret.id = typeof maybe.toString === 'function' ? maybe.toString() : String(maybe);
+          const maybe = ret._id;
+          // prefer toString() when available, otherwise fall back to String()
+          const asString = typeof (maybe as any)?.toString === 'function' ? (maybe as any).toString() : String(maybe);
+          ret.id = asString;
         }
         delete ret._id;
         delete ret.__v;

@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { UserCredentialModel as User } from '../models/user';
 import Token from '../models/token';
 import { sendPasswordResetEmail } from '../middlewares/emailSender';
+import { hashPassword } from '../utils/HashPass';
 
 const router = Router();
 
@@ -33,8 +34,8 @@ router.post('/', async (req: Request<unknown, unknown, ResetRequestBody>, res: R
       }).save();
     }
 
-    const baseUrl = process.env.BASE_URL ?? '';
-    const link = `${baseUrl}/password-reset/${user._id}/${token.token}`;
+    const baseUrl = process.env.BASE_URL ?? 'http://localhost:3001/api';
+    const link = `${baseUrl}/password-reset/rewrite/${user._id as string}/${token.token as string}`;
 
     await sendPasswordResetEmail(user.email, 'Password reset', link);
 
@@ -45,8 +46,9 @@ router.post('/', async (req: Request<unknown, unknown, ResetRequestBody>, res: R
   }
 });
 
-router.post('/:userId/:token', async (req: Request<{ userId: string; token: string }, unknown, ResetConfirmBody>, res: Response) => {
+router.post('/rewrite/:userId/:token', async (req: Request<{ userId: string; token: string }, unknown, ResetConfirmBody>, res: Response) => {
   try {
+    console.log('Password reset request for userId:', req.params.userId);
     const { password } = req.body || {};
     if (!password) {
       return res.status(400).send('Password is required.');
@@ -65,8 +67,9 @@ router.post('/:userId/:token', async (req: Request<{ userId: string; token: stri
       return res.status(400).send('Invalid link or expired.');
     }
 
-    // NOTE: Hash the password before saving in production!
-    user.password = password;
+    const hashedPassword = await hashPassword(password);
+    user.password = hashedPassword;
+
     await user.save();
 
     // delete token after use
@@ -77,6 +80,10 @@ router.post('/:userId/:token', async (req: Request<{ userId: string; token: stri
     console.error(err);
     return res.status(500).send('An error occurred.');
   }
+});
+
+router.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 export default router;
