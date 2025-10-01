@@ -1,15 +1,14 @@
 import express from 'express';
+import loginRoutes from './routes/loginRoute';
+import { errorHandler } from './middlewares/errorHandler';
+import sendEmail from './middlewares/emailSender';
+import { verifyToken } from './services/LoginService';
+import { HttpException } from './utils/HttpError';
+import reseter from './routes/password-reset';
+//import { db } from 'middlewares/db';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-
-import userRoutes from './routes/exampleRoute';
-import loginRoutes from './routes/loginRoute';
-import { errorHandler } from 'middlewares/errorHandler';
-import sendEmail from '../src/middlewares/emailSender';
-import { verifyToken } from './services/LoginService';
-import { HttpException } from './utils/HttpError';
-
 const app = express();
 
 // Security middlewares
@@ -20,18 +19,36 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+function CheckToken(authHeader: string) {
+  if (!authHeader?.startsWith('Bearer ')) {
+    throw new HttpException(401, 'Missing authorization token');
+  }
+
+  const token = authHeader.substring('Bearer '.length).trim();
+  verifyToken(token);
+  return true;
+}
+
+// Security middlewares
+
 // Routes
-app.use('/api/users', userRoutes);
+// Health check
+app.get('/', async (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.post('/api/sendEmail/:email', async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw new HttpException(401, 'Missing authorization token');
+    if (!authHeader) {
+      throw new HttpException(401, 'Missing authorization header');
     }
 
-    const token = authHeader.substring('Bearer '.length).trim();
-    verifyToken(token);
+    const validtoken = await CheckToken(authHeader);
+    if (!validtoken) {
+      throw new HttpException(403, 'Invalid token');
+    }
+    console.log('Request body:', req.body);
 
     await sendEmail(req.params.email, 'your request was received', req.body);
     res.send('Email sent');
@@ -46,8 +63,10 @@ app.post('/api/sendEmail/:email', async (req, res) => {
   }
 });
 
+app.use('/api/login', loginRoutes);
+app.use('/api/password-reset', reseter);
+
 // Error handling (last middleware)
 app.use(errorHandler);
-app.use('/api/login', loginRoutes);
 
 export default app;
