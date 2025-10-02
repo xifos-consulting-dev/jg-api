@@ -5,7 +5,7 @@ const ownerService = new OwnerService();
 
 export const getAllOwners = async (req: Request, res: Response) => {
   try {
-    const owners = await ownerService.getVenues(req, res, () => {});
+    const owners = await ownerService.getOwners(req, res, () => {});
     res.status(200).json(owners);
   } catch (error) {
     if (error instanceof HttpException) {
@@ -18,15 +18,17 @@ export const getAllOwners = async (req: Request, res: Response) => {
 
 export const createOwner = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const { name, email, phone } = req.body;
     console.log('Creating owner with data:', { name, email, phone });
     if (!name || !email || !phone) {
       res.status(400).json({ message: 'Name, email, and phone are required' });
       return;
     }
-    const newOwner = await ownerService.createOwner({ name, email, phone });
+    const newOwner = await ownerService.createOwner(req.body);
     res.status(201).json(newOwner);
   } catch (error) {
+    console.log(error);
     if (error instanceof HttpException) {
       res.status(error.status).json({ message: error.message });
       return;

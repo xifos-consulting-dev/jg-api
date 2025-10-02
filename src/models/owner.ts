@@ -7,11 +7,9 @@ const OwnerSchema = new Schema(
     displayName: { type: String, trim: true },
     email: { type: String, trim: true, lowercase: true, index: true },
     phone: { type: String, trim: true },
-    taxId: { type: String, trim: true },
+    identification: { type: String, trim: true },
 
     status: { type: String, enum: ['active', 'inactive'], default: 'active', index: true },
-
-    notes: { type: String, trim: true },
 
     propertyIds: [{ type: Schema.Types.ObjectId, ref: 'Property', index: true }],
 
