@@ -100,18 +100,11 @@ table, td { color: #000000; } </style>
 <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:25px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
         
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr>
-    <td style="padding-right: 0px;padding-left: 0px;" align="center">
-      
-      <img align="center" border="0" src="https://firebasestorage.googleapis.com/v0/b/jg-company-a9724.firebasestorage.app/o/JG-Imagenes%2FlogosYbanners%2Ficon-light.svg?alt=media&token=d3142257-8875-4b07-87b5-9f65326857c4" alt="header-logo" title="Logo"/>
-      
-    </td>
-  </tr>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 </table>
-      </td>
+    </td>
     </tr>
   </tbody>
 </table>
@@ -297,20 +290,6 @@ table, td { color: #000000; } </style>
 <div class="u-col u-col-50" style="max-width: 320px;min-width: 300px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;">
   <!--[if (!mso)&(!IE)]><!--><div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
-  
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-  <tbody>
-    <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:13px 10px;font-family:arial,helvetica,sans-serif;" align="left">
-        
-  <div style="font-size: 14px; color: #ffffff; line-height: 100%; text-align: right; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: arial, helvetica, sans-serif; font-size: 16px; line-height: 16px;">Email:</span></p>
-  </div>
-
-      </td>
-    </tr>
-  </tbody>
-</table>
 
   <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
   </div>
@@ -552,7 +531,7 @@ table, td { color: #000000; } </style>
     <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: georgia, palatino; font-size: 16px; line-height: 16px;">${numberOfNights}</span></p>
   </div>
 
-      </td>
+    </td>
     </tr>
   </tbody>
 </table>
@@ -586,6 +565,16 @@ table, td { color: #000000; } </style>
   </div>
 </table>
 
+<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:13px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+        
+  <div style="font-size: 14px; color: #ffffff; line-height: 100%; text-align: right; word-wrap: break-word;">
+    <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: arial, helvetica, sans-serif; font-size: 16px; line-height: 16px;">other details:</span></p>
+  </div>
+</table>
+
   <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
   </div>
 </div>
@@ -600,6 +589,10 @@ table, td { color: #000000; } </style>
         
   <div style="font-size: 14px; color: #ffffff; line-height: 100%; text-align: left; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: georgia, palatino; font-size: 16px; line-height: 16px;">${data.numberOfGuests}</span></p>
+  </div>
+
+  <div style="font-size: 14px; color: #ffffff; line-height: 100%; text-align: left; word-wrap: break-word;">
+    <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: georgia, palatino; font-size: 16px; line-height: 16px;">${data.otherDetails}</span></p>
   </div>
 
       </td>
@@ -635,10 +628,6 @@ table, td { color: #000000; } </style>
   <tbody>
     <tr>
       <td style="overflow-wrap:break-word;word-break:break-word;padding:13px 10px;font-family:arial,helvetica,sans-serif;" align="left">
-        
-  <div style="font-size: 14px; color: #ffffff; line-height: 100%; text-align: right; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 100%; margin: 0px;"><span style="font-family: arial, helvetica, sans-serif; font-size: 16px; line-height: 16px;">Other Details:</span></p>
-  </div>
 </table>
 
   <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
@@ -662,12 +651,11 @@ table, td { color: #000000; } </style>
 <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px 25px;font-family:arial,helvetica,sans-serif;" align="left">
-        
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px 25px;font-family:arial,helvetica,sans-serif;" align="left">   
+<table role="presentation"  cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="left">
-      <img align="left" border="0" src="https://firebasestorage.googleapis.com/v0/b/jg-company-a9724.firebasestorage.app/o/JG-Imagenes%2FlogosYbanners%2Ficon-light.svg?alt=media&token=d3142257-8875-4b07-87b5-9f65326857c4" alt="footer-logo" title="footer-logo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;" width="155.65"/>
+      <img align="left" border="0" width="10%" src="https://firebasestorage.googleapis.com/v0/b/jg-company-a9724.firebasestorage.app/o/JG-Imagenes%2FlogosYbanners%2Ficon-dark.png?alt=media&token=191986de-67d2-405d-8fad-3de7d4c224de" alt="footer-logo" title="footer-logo" style="" width="155.65"/>
     </td>
   </tr>
 </table>
