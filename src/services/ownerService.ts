@@ -1,7 +1,7 @@
 import { HttpException } from '../utils/HttpError';
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../middlewares/db';
-import { Error as MongooseError } from 'mongoose';
+import mongoose, { Error as MongooseError } from 'mongoose';
 
 import OwnerModel from '../models/owner';
 
@@ -17,7 +17,7 @@ export class OwnerService {
     return owner;
   }
 
-  public async createOwner(data: { name: string; email: string; phone?: string }) {
+  public async createOwner(data: { name: string; email: string; phone?: string; identification?: string }) {
     await db();
 
     const name = data.name?.trim();
@@ -27,15 +27,19 @@ export class OwnerService {
       throw new HttpException(400, 'Name and email are required');
     }
 
+    const ownerId = new mongoose.Types.ObjectId();
+
     try {
       const newOwner = new OwnerModel({
         ...data,
+        _id: ownerId,
         name,
         email,
       });
       return await newOwner.save();
     } catch (error) {
-      if (error instanceof HttpException) {
+      console.log(error);
+      if (error instanceof Error) {
         throw error;
       }
 
@@ -51,7 +55,7 @@ export class OwnerService {
     }
   }
 
-  public getVenues = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getOwners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await db();
       const owners = await OwnerModel.find().sort({ createdAt: -1 }).exec();
@@ -62,7 +66,6 @@ export class OwnerService {
         next(error);
         return;
       }
-      next(new HttpException(500, 'Failed to fetch venues'));
     }
   };
 }

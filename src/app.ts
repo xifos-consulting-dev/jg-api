@@ -1,6 +1,6 @@
 import express from 'express';
 import loginRoutes from './routes/loginRoute';
-import { errorHandler } from './middlewares/errorHandler';
+// import { errorHandler } from './middlewares/errorHandler';
 import sendEmail from './middlewares/emailSender';
 import ownerRoutes from './routes/ownerRouter';
 //import { verifyToken } from './services/LoginService';
@@ -69,9 +69,9 @@ app.post('/api/sendEmail/:email', async (req, res) => {
 app.use('/api/login', loginRoutes);
 app.use('/api/password-reset', reseter);
 app.use('/api/venues', venueRoutes);
-app.use('/api/owners/', ownerRoutes);
+app.use('/api/owners', ownerRoutes);
 
 // Error handling (last middleware)
-app.use(errorHandler);
+// app.use(errorHandler);
 
 export default app;
