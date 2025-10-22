@@ -40,7 +40,7 @@ app.get('/', async (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.post('/api/sendEmail/:email', async (req, res) => {
+app.post('/api/sendEmailBooking/:email', async (req, res) => {
   try {
     // const authHeader = req.headers.authorization;
     // if (!authHeader) {
