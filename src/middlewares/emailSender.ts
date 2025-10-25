@@ -6,14 +6,14 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
   auth: {
-    user: 'kendall24gb@gmail.com', // your email
-    pass: 'zjaulskniunzuygz', // the app password you generated, paste without spaces
+    user: 'madewithkonsept@gmail.com', // your email
+    pass: 'ckpmwxolbqepaupk', // the app password you generated, paste without spaces
   },
   secure: true,
   port: 465,
 });
 
-const fromEmail = 'kendall24gb@gmail.com';
+const fromEmail = 'madewithkonsept@gmail.com';
 
 const sendEmail = async (to: string, subject: string, userData: EmailData) => {
   console.log('Sending email...');
