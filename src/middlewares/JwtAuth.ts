@@ -3,7 +3,7 @@ import { ENV } from '../config/env';
 type JwtPayload = {
   iat?: number;
   exp?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 declare module 'express' {
