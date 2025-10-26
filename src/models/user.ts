@@ -1,6 +1,6 @@
 // models/user-credential.ts
 import mongoose, { Schema, Model, Document } from 'mongoose';
-import { object, string, boolean, InferType } from 'yup';
+import { object, string, boolean, InferType, ValidationError } from 'yup';
 
 export type UserCredential = {
   id: string;
@@ -38,13 +38,21 @@ const userCredentialSchema = new Schema<UserCredentialDoc>(
     timestamps: true,
     toJSON: {
       virtuals: true,
-      transform: (_doc, ret: any) => {
+      transform: (_doc, ret: Record<string, unknown>) => {
         // expose `id` instead of `_id`, remove internal fields
         if (ret && typeof ret._id !== 'undefined' && ret._id !== null) {
-          const maybe = ret._id;
-          // prefer toString() when available, otherwise fall back to String()
-          const asString = typeof (maybe as any)?.toString === 'function' ? (maybe as any).toString() : String(maybe);
-          ret.id = asString;
+          const maybe = ret._id as mongoose.Types.ObjectId | { toString?: () => string } | string | number | null | undefined;
+          const asString =
+            typeof maybe === 'string'
+              ? maybe
+              : typeof maybe === 'number'
+                ? String(maybe)
+                : typeof maybe === 'object' && maybe !== null && typeof maybe.toString === 'function'
+                  ? maybe.toString()
+                  : undefined;
+          if (asString) {
+            ret.id = asString;
+          }
         }
         delete ret._id;
         delete ret.__v;
@@ -77,15 +85,31 @@ export const userCredentialYup = object({
 export type UserCredentialValidated = InferType<typeof userCredentialYup>;
 
 // ---- 5) Helper to run validation and return a friendly shape ----
-export type ValidationErrorDetail = { path?: string; message: string };
+export type ValidationErrorDetail = { path?: string | undefined; message: string };
 export type ValidationResult<T> = { value: T; error: null } | { value: null; error: { message: string; details: ValidationErrorDetail[] } };
 
-export async function validateUserCredential(payload: unknown): Promise<ValidationResult<UserCredentialValidated>> {
+export async function validateUserCredential(payload: unknown): Promise<ValidationResult<UserCredentialInput>> {
   try {
     const value = await userCredentialYup.validate(payload, { abortEarly: false });
     return { value, error: null };
-  } catch (err: any) {
-    const details: ValidationErrorDetail[] = err.inner?.length ? err.inner.map((e: any) => ({ path: e.path, message: e.message })) : [{ path: err.path, message: err.message }];
+  } catch (err) {
+    if (!(err instanceof ValidationError)) {
+      return {
+        value: null,
+        error: {
+          message: 'Validation failed',
+          details: [{ message: 'Unknown validation error' }],
+        },
+      };
+    }
+
+    const details: ValidationErrorDetail[] =
+      err.inner && err.inner.length > 0
+        ? err.inner.map((validationError) => ({
+            path: validationError.path ?? undefined,
+            message: validationError.message,
+          }))
+        : [{ path: err.path ?? undefined, message: err.message }];
     return { value: null, error: { message: 'Validation failed', details } };
   }
 }

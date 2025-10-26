@@ -68,4 +68,33 @@ export class OwnerService {
       }
     }
   };
+  public async deleteOwnerbyId(id: string) {
+    try {
+      await db();
+      if (!id) {
+        throw new HttpException(400, 'Owner ID is required');
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new HttpException(400, 'Invalid owner ID format');
+      }
+
+      const deletedOwner = await OwnerModel.findByIdAndDelete(id).exec();
+      if (!deletedOwner) {
+        throw new HttpException(404, 'Owner not found');
+      }
+      return deletedOwner;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      if (error instanceof MongooseError) {
+        throw new HttpException(400, 'Database operation failed');
+      }
+
+      console.error('Error deleting owner:', error);
+      throw new HttpException(500, 'Failed to delete owner');
+    }
+  }
 }

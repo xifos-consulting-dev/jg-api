@@ -36,3 +36,21 @@ export const createOwner = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const deleteOwnerByObjectId = async (req: Request, res: Response) => {
+  try {
+    const ownerId = req.params.id;
+    if (!ownerId) {
+      res.status(400).json({ message: 'Owner ID is required' });
+      return;
+    }
+    const deletedOwner = await ownerService.deleteOwnerbyId(ownerId);
+    res.status(200).json(deletedOwner);
+  } catch (error) {
+    if (error instanceof HttpException) {
+      res.status(error.status).json({ message: error.message });
+      return;
+    }
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
