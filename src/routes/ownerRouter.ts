@@ -3,7 +3,7 @@ import { createOwner, getAllOwners, deleteOwnerByObjectId } from '../controllers
 const router = Router();
 
 router.get('/all', getAllOwners);
-router.post('/', createOwner);
+router.post('/create', createOwner);
 router.delete('/delete/:id', deleteOwnerByObjectId);
 
 export default router;
