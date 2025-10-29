@@ -6,6 +6,18 @@ import mongoose, { Error as MongooseError } from 'mongoose';
 import OwnerModel from '../models/owner';
 
 export class OwnerService {
+  public async updateOwnerById(id: string, updateData: Partial<{ name: string; email: string; phone: string; identification: string; status: 'active' | 'inactive' }>) {
+    await db();
+    if (!id) {
+      throw new HttpException(400, 'Owner ID is required');
+    }
+    const updatedOwner = await OwnerModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+    if (!updatedOwner) {
+      throw new HttpException(404, 'Owner not found');
+    }
+    return updatedOwner;
+  }
+
   public async getOwnerById(id: string) {
     if (!id) {
       throw new HttpException(400, 'Owner ID is required');
