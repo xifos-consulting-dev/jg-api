@@ -5,7 +5,7 @@ const ownerService = new OwnerService();
 
 export const getAllOwners = async (req: Request, res: Response) => {
   try {
-    const owners = await ownerService.getOwners(req, res, () => {});
+    const owners = await ownerService.getOwners();
     res.status(200).json(owners);
   } catch (error) {
     if (error instanceof HttpException) {

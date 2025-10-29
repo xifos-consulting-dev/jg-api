@@ -1,27 +1,14 @@
-import { Document } from 'mongoose';
 export type OwnerStatus = 'active' | 'inactive';
 
-export interface Owner extends Document {
-  _id: string;
+export interface Owner {
+  id: string;
   firstName: string;
   lastName: string;
-  displayName?: string;
-  email?: string;
-  phone?: string;
-  taxId?: string; // local tax identifier if needed
-
-  status: OwnerStatus; // active/inactive
-  notes?: string;
-
-  // Relations (denormalized helpers)
-  propertyIds: string[]; // ObjectId[] in DB
-  // Optional aggregates for the table/filtering:
-  metrics?: {
-    stances?: number; // stays/period count shown in the table
-    income?: number; // e.g., current period or lifetime (define in your service)
-    expenses?: number; // same scope as income
-  };
-
-  createdAt: string; // ISO Date
-  updatedAt: string; // ISO Date
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  identification: string;
+  status: OwnerStatus;
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
 }

@@ -1,9 +1,9 @@
 import { HttpException } from '../utils/HttpError';
-import { Request, Response, NextFunction } from 'express';
 import { db } from '../middlewares/db';
 import mongoose, { Error as MongooseError } from 'mongoose';
 
 import OwnerModel from '../models/owner';
+import { Owner } from 'utils/types/owner';
 
 export class OwnerService {
   public async updateOwnerById(id: string, updateData: Partial<{ name: string; email: string; phone: string; identification: string; status: 'active' | 'inactive' }>) {
@@ -67,19 +67,18 @@ export class OwnerService {
     }
   }
 
-  public getOwners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      await db();
-      const owners = await OwnerModel.find().sort({ createdAt: -1 }).exec();
-      const plainVenues = owners.map((owner) => owner.toObject());
-      res.status(200).json(plainVenues);
-    } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-        return;
-      }
-    }
+  public getOwners = async (): Promise<Owner[] | undefined> => {
+    await db();
+    const owners = await OwnerModel.find({}).lean();
+    return owners.map(({ _id, createdAt, updatedAt, __v, ...owner }) => ({
+      ...owner,
+      id: _id.toString(),
+      displayName: `${owner.firstName} ${owner.lastName}`.trim(),
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString(),
+    }));
   };
+
   public async deleteOwnerbyId(id: string) {
     try {
       await db();
