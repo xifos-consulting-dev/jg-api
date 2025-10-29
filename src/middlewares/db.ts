@@ -1,9 +1,12 @@
 import mongoose, { Connection } from 'mongoose';
+import { DB_CONNECTION_URL, ENV } from '../config/env';
 
-const MONGODB_URI = process.env.DATABASE_URL;
-if (!MONGODB_URI) {
-  throw new Error('DATABASE_URL environment variable is not set.');
+// Validate required environment variables for Atlas connection
+if (!ENV.DB_URL_PREFIX || !ENV.DB_URL_BASE || !ENV.DB_USER || !ENV.DB_USER_PASS) {
+  throw new Error('Required MongoDB Atlas environment variables are not set. Please check DB_URL_PREFIX, DB_URL_BASE, DB_USER, and DB_USER_PASS.');
 }
+
+const MONGODB_URI = DB_CONNECTION_URL;
 
 type MongooseGlobal = {
   _mongoose?: { conn: Connection | null; promise: Promise<Connection> | null; shutdownHookSet?: boolean };
@@ -31,9 +34,16 @@ export async function db(): Promise<Connection> {
   // Create a new connection attempt and cache the promise
   cached.promise = mongoose
     .connect(MONGODB_URI!, {
-      // Add options if you need them
-      // serverSelectionTimeoutMS: 5000,
-      // dbName: "yourDbName",
+      // Atlas-specific connection options
+      serverSelectionTimeoutMS: 10000, // Keep trying to send operations for 10 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      bufferCommands: false, // Disable mongoose buffering
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 5, // Maintain a minimum of 5 socket connections
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      retryWrites: true, // Retry failed writes
+      w: 'majority', // Write concern
+      ...(ENV.DB_NAME && { dbName: ENV.DB_NAME }), // Use specific database name if provided
     })
     .then((m) => {
       cached.conn = m.connection;
@@ -58,7 +68,7 @@ export async function db(): Promise<Connection> {
         process.once('SIGTERM', () => cleanup('SIGTERM'));
       }
 
-      console.log('Connected to MongoDB');
+      console.log('Connected to MongoDB Atlas');
       return m.connection;
     });
 
