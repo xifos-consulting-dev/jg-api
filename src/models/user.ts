@@ -113,3 +113,5 @@ export async function validateUserCredential(payload: unknown): Promise<Validati
     return { value: null, error: { message: 'Validation failed', details } };
   }
 }
+
+export default UserCredentialModel;

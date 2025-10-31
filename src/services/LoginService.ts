@@ -1,5 +1,8 @@
 import { HttpException } from '../utils/HttpError';
 import { signJwt, verifyJwt } from '../middlewares/JwtAuth';
+//import { UserCredentialModel as User } from '../models/user';
+import { db } from '../middlewares/db';
+
 type UserCredential = {
   id: string;
   email: string;
@@ -9,54 +12,42 @@ type UserCredential = {
   active: boolean;
 };
 
-const credentialDump: ReadonlyArray<UserCredential> = [
-  {
-    id: 'U001',
-    email: 'admin',
-    password: 'admin123',
-    name: 'System Administrator',
-    role: 'admin',
-    active: true,
-  },
-  {
-    id: 'U002',
-    email: 'manager',
-    password: 'manager123',
-    name: 'Operations Manager',
-    role: 'manager',
-    active: true,
-  },
-  {
-    id: 'U003',
-    email: 'analyst',
-    password: 'analyst123',
-    name: 'Data Analyst',
-    role: 'analyst',
-    active: true,
-  },
-  {
-    id: 'U004',
-    email: 'suspended',
-    password: 'suspended123',
-    name: 'Suspended Email',
-    role: 'viewer',
-    active: false,
-  },
-];
-
 class LoginService {
   private readonly credentials: Map<string, UserCredential>;
 
-  constructor(users: ReadonlyArray<UserCredential>) {
-    this.credentials = new Map(users.map((email) => [email.email.toLowerCase(), email]));
+  constructor() {
+    this.credentials = new Map<string, UserCredential>();
+  }
+
+  public async findUserByEmail(email: string): Promise<UserCredential | null> {
+    const collection = (await db()).collection('usercredentials');
+    if (!collection) {
+      throw new HttpException(500, 'Database collection not found');
+    }
+    const user = (await collection.findOne({ email: email.toLowerCase() })) as UserCredential | null;
+    if (!user) {
+      throw new HttpException(404, "User with given email doesn't exist.");
+    }
+    console.log('Looking up user by email:', user);
+    return user;
+  }
+
+  public async getAllUsers(): Promise<void> {
+    const collection = (await db()).collection('usercredentials');
+    if (!collection) {
+      throw new HttpException(500, 'Database collection not found');
+    }
+    const users = (await collection.find({}).toArray()) as unknown[];
+    console.log('Retrieved all users from database ', users);
   }
 
   public async LoginVerification(email: string, password: string): Promise<string> {
     if (!email || !password) {
       throw new HttpException(400, 'Email and password are required');
     }
-
-    const record = this.credentials.get(email.toLowerCase());
+    const record = await this.findUserByEmail(email);
+    console.log('Verifying login for email:', email);
+    console.log('Found user record:', record);
 
     if (!record || record.password !== password) {
       throw new HttpException(401, 'Invalid email or password');
@@ -116,6 +107,6 @@ class LoginService {
   }
 }
 
-export const loginService = new LoginService(credentialDump);
+export const loginService = new LoginService();
 export const LoginVerification = (email: string, password: string) => loginService.LoginVerification(email, password);
 export const verifyToken = (token: string) => loginService.verifyToken(token);
