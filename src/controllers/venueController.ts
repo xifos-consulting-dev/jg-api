@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import mongoose, { FilterQuery } from 'mongoose';
 import VenueModel from '../models/venue';
-import { db } from '../middlewares/db';
 import { HttpException } from '../utils/HttpError';
 import type { VenueStatus } from '../utils/types/venue';
 
@@ -195,7 +194,6 @@ const buildVenueFilters = (query: Request['query']): FilterQuery<VenueDocument> 
 
 export const createVenue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await db();
     const input = validateCreateVenueInput(req.body);
     console.log('Creating venue with input:', input);
     const created = await VenueModel.create(input);
@@ -216,7 +214,6 @@ export const createVenue = async (req: Request, res: Response, next: NextFunctio
 
 export const getVenues = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await db();
     const filters = buildVenueFilters(req.query);
     const venues = await VenueModel.find(filters).sort({ createdAt: -1 }).exec();
     const plainVenues = venues.map((v) => v.toObject() as VenuePlainObject);

@@ -72,6 +72,6 @@ app.use('/api/venues', venueRoutes);
 app.use('/api/owners', ownerRoutes);
 
 // Error handling (last middleware)
-// app.use(errorHandler);
+//app.use(errorHandler);
 
 export default app;

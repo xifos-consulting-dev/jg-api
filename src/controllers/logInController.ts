@@ -5,7 +5,6 @@ import { loginService } from '../services/LoginService';
 export const logIn = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    console.log(email, ' | password >', password);
     const token = await loginService.LoginVerification(email, password);
 
     res.status(200).json({ token });

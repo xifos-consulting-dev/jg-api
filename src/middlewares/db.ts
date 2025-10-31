@@ -2,9 +2,9 @@ import mongoose, { Connection } from 'mongoose';
 import { DB_CONNECTION_URL, ENV } from '../config/env';
 
 // Validate required environment variables for Atlas connection
-if (!ENV.DB_URL_PREFIX || !ENV.DB_URL_BASE || !ENV.DB_USER || !ENV.DB_USER_PASS) {
+/*if (!ENV.DB_URL_PREFIX || !ENV.DB_URL_BASE || !ENV.DB_USER || !ENV.DB_USER_PASS) {
   throw new Error('Required MongoDB Atlas environment variables are not set. Please check DB_URL_PREFIX, DB_URL_BASE, DB_USER, and DB_USER_PASS.');
-}
+}*/
 
 const MONGODB_URI = DB_CONNECTION_URL;
 
